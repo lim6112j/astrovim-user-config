@@ -1,3 +1,5 @@
+vim.o.guifont = "Hack Nerd Font Mono:h20"
+
 return {
     plugins = {
         { "vim-scripts/paredit.vim",        lazy = false }, {
