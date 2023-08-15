@@ -7,7 +7,9 @@ vim.g.neovide_transparency = 0.0
 vim.g.transparency = 1.0
 vim.g.neovide_background_color = "#0f1117" .. alpha()
 vim.o.guifont = "Hack Nerd Font Mono:h20"
-
+-- fsharp 쓸때 ionide가 빈줄에서 32603 에러를 쏟아내는거 방지
+vim.cmd([[let g:fsharp#show_signature_on_cursor_move = 0]])
+-- vim.g.fsharp#show_signature_on_cursor_move = 0
 return {
     plugins = {
         { "vim-scripts/paredit.vim",        lazy = false }, {
