@@ -98,10 +98,23 @@ return {
             lazy = false,
             config = function()
                 require('telescope').setup {
+                    -- defaults = {
+                    --     file_ignore_patterns = {
+                    --         "node_modules", "dist", ".git", ".parcel-cache", "*.lock",
+                    --     }
+                    -- }
                     defaults = {
-                        file_ignore_patterns = {
-                            "node_modules", "dist"
-                        }
+                        vimgrep_arguments = {
+                            'rg',
+                            '--color=never',
+                            '--no-heading',
+                            '--with-filename',
+                            '--line-number',
+                            '--column',
+                            '--smart-case',
+                            '--ignore-file',
+                            '.gitignore'
+                        },
                     }
                 }
             end
