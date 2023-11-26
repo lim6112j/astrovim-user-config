@@ -61,7 +61,18 @@ return {
         --     "aMOPel/nvim-treesitter-nim",
         --     run = { ':TSUpdate nim', ':TSUpdate nim_format_string' }
         -- },
-        { "vim-scripts/paredit.vim",        lazy = false }, {
+        {
+            -- "neovim/nvim-lspconfig",
+            -- dartls = {
+            --     setup = { cmd = { "dart", "language-server", "--protocol=lsp" } }
+            -- }
+            "neovim/nvim-lspconfig",
+            opts = function()
+                require("lspconfig").dartls.setup({
+                    cmd = { "dart", "language-server", "--protocol=lsp" }
+                })
+            end
+        }, { "vim-scripts/paredit.vim", lazy = false }, {
         "kylechui/nvim-surround",
         lazy = false,
         config = function()
