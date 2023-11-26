@@ -145,3 +145,14 @@ return {
         }
     }
 }
+vim.cmd [[packadd packer.nvim]]
+return require('packer').startup(function(use)
+    use {
+        "aMOPel/nvim-treesitter-nim",
+        -- install/update parsers
+        run = {
+            ':TSUpdate nim',
+            ':TSUpdate nim_format_string',
+        },
+    }
+end)
