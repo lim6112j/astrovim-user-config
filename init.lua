@@ -57,102 +57,87 @@ vim.api.nvim_command([[autocmd ModeChanged * lua Pain()]])
 
 return {
     plugins = {
-        { "vim-scripts/paredit.vim",        lazy = false },
         {
-            "kylechui/nvim-surround",
-            lazy = false,
-            config = function()
-                require("nvim-surround").setup({
-                    -- Configuration here, or leave empty to use defaults
-                })
-            end
-        },
-        { 'christoomey/vim-tmux-navigator', lazy = false },
-        { 'ionide/Ionide-vim',              lazy = false },
-        {
-            'nvim-orgmode/orgmode',
-            lazy = false,
-            config = function()
-                require("orgmode").setup_ts_grammar()
-                require("orgmode").setup({
-                    org_agenda_files = { '~/org/*', '~/org/**/*' },
-                    org_default_notes_file = '~/org/refile.org',
-                    org_foldenabled = false,
-                    org_folding = { '<TAB>' },
-                    org_todo_keywords = {
-                        'TODO', 'WAITING', '|', 'DONE', 'DELEGATED'
-                    },
-                    -- mappings = {
-                    -- disable_all = true
-                    -- },
-                    org_todo_keyword_faces = {
-                        WAITING = ':foreground blue :weight bold',
-                        DELEGATED = ':background #FFFFFF :slant italic :underline on',
-                        TODO = ':background #000000 :foreground red' -- overrides builtin color for `TODO` keyword
-                    }
-                })
-            end
-        },
-        {
-            "nvim-telescope/telescope.nvim",
-            lazy = false,
-            config = function()
-                local actions = require "telescope.actions"
-                local get_icon = require("astronvim.utils").get_icon
-                require('telescope').setup {
-                    -- defaults = {
-                    --     file_ignore_patterns = {
-                    --         "node_modules", "dist", ".git", ".parcel-cache", "*.lock",
-                    --     }
-                    -- }
-                    defaults = {
+            "aMOPel/nvim-treesitter-nim",
+            run = { ':TSUpdate nim', ':TSUpdate nim_format_string' }
+        }, { "vim-scripts/paredit.vim", lazy = false }, {
+        "kylechui/nvim-surround",
+        lazy = false,
+        config = function()
+            require("nvim-surround").setup({
+                -- Configuration here, or leave empty to use defaults
+            })
+        end
+    }, { 'christoomey/vim-tmux-navigator', lazy = false },
+        { 'ionide/Ionide-vim',              lazy = false }, {
+        'nvim-orgmode/orgmode',
+        lazy = false,
+        config = function()
+            require("orgmode").setup_ts_grammar()
+            require("orgmode").setup({
+                org_agenda_files = { '~/org/*', '~/org/**/*' },
+                org_default_notes_file = '~/org/refile.org',
+                org_foldenabled = false,
+                org_folding = { '<TAB>' },
+                org_todo_keywords = {
+                    'TODO', 'WAITING', '|', 'DONE', 'DELEGATED'
+                },
+                -- mappings = {
+                -- disable_all = true
+                -- },
+                org_todo_keyword_faces = {
+                    WAITING = ':foreground blue :weight bold',
+                    DELEGATED = ':background #FFFFFF :slant italic :underline on',
+                    TODO = ':background #000000 :foreground red'     -- overrides builtin color for `TODO` keyword
+                }
+            })
+        end
+    }, {
+        "nvim-telescope/telescope.nvim",
+        lazy = false,
+        config = function()
+            local actions = require "telescope.actions"
+            local get_icon = require("astronvim.utils").get_icon
+            require('telescope').setup {
+                -- defaults = {
+                --     file_ignore_patterns = {
+                --         "node_modules", "dist", ".git", ".parcel-cache", "*.lock",
+                --     }
+                -- }
+                defaults = {
 
-                        git_worktrees = vim.g.git_worktrees,
-                        prompt_prefix = get_icon("Selected", 1),
-                        selection_caret = get_icon("Selected", 1),
-                        path_display = { "truncate" },
-                        sorting_strategy = "ascending",
-                        layout_config = {
-                            horizontal = { prompt_position = "top", preview_width = 0.55 },
-                            vertical = { mirror = false },
-                            width = 0.87,
-                            height = 0.80,
-                            preview_cutoff = 120,
+                    git_worktrees = vim.g.git_worktrees,
+                    prompt_prefix = get_icon("Selected", 1),
+                    selection_caret = get_icon("Selected", 1),
+                    path_display = { "truncate" },
+                    sorting_strategy = "ascending",
+                    layout_config = {
+                        horizontal = {
+                            prompt_position = "top",
+                            preview_width = 0.55
                         },
-                        mappings = {
-                            i = {
-                                ["<C-n>"] = actions.cycle_history_next,
-                                ["<C-p>"] = actions.cycle_history_prev,
-                                ["<C-j>"] = actions.move_selection_next,
-                                ["<C-k>"] = actions.move_selection_previous,
-                            },
-                            n = { q = actions.close },
+                        vertical = { mirror = false },
+                        width = 0.87,
+                        height = 0.80,
+                        preview_cutoff = 120
+                    },
+                    mappings = {
+                        i = {
+                            ["<C-n>"] = actions.cycle_history_next,
+                            ["<C-p>"] = actions.cycle_history_prev,
+                            ["<C-j>"] = actions.move_selection_next,
+                            ["<C-k>"] = actions.move_selection_previous
                         },
-                        vimgrep_arguments = {
-                            'rg',
-                            '--color=never',
-                            '--no-heading',
-                            '--with-filename',
-                            '--line-number',
-                            '--column',
-                            '--smart-case',
-                            '--ignore-file',
-                            '.gitignore'
-                        },
+                        n = { q = actions.close }
+                    },
+                    vimgrep_arguments = {
+                        'rg', '--color=never', '--no-heading',
+                        '--with-filename', '--line-number', '--column',
+                        '--smart-case', '--ignore-file', '.gitignore'
                     }
                 }
-            end
-        }
+            }
+        end
+    }
     }
 }
-vim.cmd [[packadd packer.nvim]]
-return require('packer').startup(function(use)
-    use {
-        "aMOPel/nvim-treesitter-nim",
-        -- install/update parsers
-        run = {
-            ':TSUpdate nim',
-            ':TSUpdate nim_format_string',
-        },
-    }
-end)
