@@ -57,10 +57,11 @@ vim.api.nvim_command([[autocmd ModeChanged * lua Pain()]])
 
 return {
     plugins = {
-        {
-            "aMOPel/nvim-treesitter-nim",
-            run = { ':TSUpdate nim', ':TSUpdate nim_format_string' }
-        }, { "vim-scripts/paredit.vim", lazy = false }, {
+        -- {
+        --     "aMOPel/nvim-treesitter-nim",
+        --     run = { ':TSUpdate nim', ':TSUpdate nim_format_string' }
+        -- },
+        { "vim-scripts/paredit.vim",        lazy = false }, {
         "kylechui/nvim-surround",
         lazy = false,
         config = function()
