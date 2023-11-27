@@ -58,7 +58,8 @@ vim.api.nvim_command([[autocmd ModeChanged * lua Pain()]])
 vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(args)
         vim.keymap.set('n', "<Leader>la", vim.lsp.buf.code_action, { buffer = args.buf })
-        -- vim.keymap.set('n', "<Leader>lr", vim.lsp.buf.range_code_action, { buffer = args.buf })
+        vim.keymap.set('n', "]d", vim.diagnostic.goto_next, { buffer = args.buf })
+        vim.keymap.set('n', "[d", vim.diagnostic.goto_prev, { buffer = args.buf })
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = args.buf })
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = args.buf })
     end,
