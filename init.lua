@@ -55,6 +55,14 @@ end
 
 vim.api.nvim_command([[autocmd ModeChanged * lua Pain()]])
 
+vim.api.nvim_create_autocmd('LspAttach', {
+    callback = function(args)
+        vim.keymap.set('n', "<Leader>la", vim.lsp.buf.code_action, { buffer = args.buf })
+        -- vim.keymap.set('n', "<Leader>lr", vim.lsp.buf.range_code_action, { buffer = args.buf })
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = args.buf })
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = args.buf })
+    end,
+})
 return {
     plugins = {
         -- {
@@ -62,17 +70,23 @@ return {
         --     run = { ':TSUpdate nim', ':TSUpdate nim_format_string' }
         -- },
         {
-            -- "neovim/nvim-lspconfig",
-            -- dartls = {
-            --     setup = { cmd = { "dart", "language-server", "--protocol=lsp" } }
-            -- }
-            "neovim/nvim-lspconfig",
-            opts = function()
-                require("lspconfig").dartls.setup({
-                    cmd = { "dart", "language-server", "--protocol=lsp" }
-                })
-            end
-        }, { "vim-scripts/paredit.vim", lazy = false }, {
+            'akinsho/flutter-tools.nvim',
+            lazy = false,
+            dependencies = {
+                'nvim-lua/plenary.nvim',
+                'stevearc/dressing.nvim', -- optional for vim.ui.select
+            },
+            config = true,
+        },
+        -- {
+        --     "neovim/nvim-lspconfig",
+        --     opts = function()
+        --         require("lspconfig").dartls.setup({
+        --             cmd = { "dart", "language-server", "--protocol=lsp" }
+        --         })
+        --     end
+        -- },
+        { "vim-scripts/paredit.vim",        lazy = false }, {
         "kylechui/nvim-surround",
         lazy = false,
         config = function()
@@ -100,7 +114,7 @@ return {
                 org_todo_keyword_faces = {
                     WAITING = ':foreground blue :weight bold',
                     DELEGATED = ':background #FFFFFF :slant italic :underline on',
-                    TODO = ':background #000000 :foreground red'     -- overrides builtin color for `TODO` keyword
+                    TODO = ':background #000000 :foreground red' -- overrides builtin color for `TODO` keyword
                 }
             })
         end
