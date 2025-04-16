@@ -1,3 +1,7 @@
+-- You can also add or configure plugins by creating files in this `plugins/` folder
+-- PLEASE REMOVE THE EXAMPLES YOU HAVE NO INTEREST IN BEFORE ENABLING THIS FILE
+-- Here are some examples:
+
 -- Helper function for transparency formatting
 local alpha = function()
     return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
@@ -64,20 +68,23 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = args.buf })
     end,
 })
+---@type LazySpec
 return {
-    plugins = {
-        -- {
-        --     "aMOPel/nvim-treesitter-nim",
-        --     run = { ':TSUpdate nim', ':TSUpdate nim_format_string' }
-        -- },
+
         {
-            'akinsho/flutter-tools.nvim',
+            "nvim-flutter/flutter-tools.nvim",
             lazy = false,
             dependencies = {
                 'nvim-lua/plenary.nvim',
                 'stevearc/dressing.nvim', -- optional for vim.ui.select
             },
-            config = true,
+            config = function()
+                require("flutter-tools").setup ({
+                -- Configuration here, or leave empty to use defaults
+                flutter_path="/Users/byeongcheollim/development/flutter/bin/flutter"
+            })
+            end,
+            ft={"dart"},
         },
         -- {
         --     "neovim/nvim-lspconfig",
@@ -138,51 +145,9 @@ return {
 --    },
 		{
         "nvim-telescope/telescope.nvim",
-        lazy = false,
-        config = function()
-            local actions = require "telescope.actions"
-            local get_icon = require("astronvim.utils").get_icon
-            require('telescope').setup {
-                -- defaults = {
-                --     file_ignore_patterns = {
-                --         "node_modules", "dist", ".git", ".parcel-cache", "*.lock",
-                --     }
-                -- }
-                defaults = {
-
-                    git_worktrees = vim.g.git_worktrees,
-                    prompt_prefix = get_icon("Selected", 1),
-                    selection_caret = get_icon("Selected", 1),
-                    path_display = { "truncate" },
-                    sorting_strategy = "ascending",
-                    layout_config = {
-                        horizontal = {
-                            prompt_position = "top",
-                            preview_width = 0.55
-                        },
-                        vertical = { mirror = false },
-                        width = 0.87,
-                        height = 0.80,
-                        preview_cutoff = 120
-                    },
-                    mappings = {
-                        i = {
-                            ["<C-n>"] = actions.cycle_history_next,
-                            ["<C-p>"] = actions.cycle_history_prev,
-                            ["<C-j>"] = actions.move_selection_next,
-                            ["<C-k>"] = actions.move_selection_previous
-                        },
-                        n = { q = actions.close }
-                    },
-                    vimgrep_arguments = {
-                        'rg', '--color=never', '--no-heading',
-                        '--with-filename', '--line-number', '--column',
-                        '--smart-case', '--ignore-file', '.gitignore'
-                    }
-                }
-            }
-        end
-    },
+        tag= '0.1.8',
+        dependencies= { 'nvim-lua/plenary.nvim'}
+        },
         {
             "scalameta/nvim-metals",
             dependencies = {
@@ -323,6 +288,83 @@ return {
                 })
             end
 
-        }
-    }
+        },
+  -- == Examples of Adding Plugins ==
+
+  "andweeb/presence.nvim",
+  {
+    "ray-x/lsp_signature.nvim",
+    event = "BufRead",
+    config = function() require("lsp_signature").setup() end,
+  },
+
+  -- == Examples of Overriding Plugins ==
+
+  -- customize dashboard options
+  {
+    "folke/snacks.nvim",
+    opts = {
+      dashboard = {
+        preset = {
+          header = table.concat({
+            " █████  ███████ ████████ ██████   ██████ ",
+            "██   ██ ██         ██    ██   ██ ██    ██",
+            "███████ ███████    ██    ██████  ██    ██",
+            "██   ██      ██    ██    ██   ██ ██    ██",
+            "██   ██ ███████    ██    ██   ██  ██████ ",
+            "",
+            "███    ██ ██    ██ ██ ███    ███",
+            "████   ██ ██    ██ ██ ████  ████",
+            "██ ██  ██ ██    ██ ██ ██ ████ ██",
+            "██  ██ ██  ██  ██  ██ ██  ██  ██",
+            "██   ████   ████   ██ ██      ██",
+          }, "\n"),
+        },
+      },
+    },
+  },
+
+  -- You can disable default plugins as follows:
+  { "max397574/better-escape.nvim", enabled = false },
+
+  -- You can also easily customize additional setup of plugins that is outside of the plugin's setup call
+  {
+    "L3MON4D3/LuaSnip",
+    config = function(plugin, opts)
+      require "astronvim.plugins.configs.luasnip"(plugin, opts) -- include the default astronvim config that calls the setup call
+      -- add more custom luasnip configuration such as filetype extend or custom snippets
+      local luasnip = require "luasnip"
+      luasnip.filetype_extend("javascript", { "javascriptreact" })
+    end,
+  },
+
+  {
+    "windwp/nvim-autopairs",
+    config = function(plugin, opts)
+      require "astronvim.plugins.configs.nvim-autopairs"(plugin, opts) -- include the default astronvim config that calls the setup call
+      -- add more custom autopairs configuration such as custom rules
+      local npairs = require "nvim-autopairs"
+      local Rule = require "nvim-autopairs.rule"
+      local cond = require "nvim-autopairs.conds"
+      npairs.add_rules(
+        {
+          Rule("$", "$", { "tex", "latex" })
+            -- don't add a pair if the next character is %
+            :with_pair(cond.not_after_regex "%%")
+            -- don't add a pair if  the previous character is xxx
+            :with_pair(
+              cond.not_before_regex("xxx", 3)
+            )
+            -- don't move right when repeat character
+            :with_move(cond.none())
+            -- don't delete if the next character is xx
+            :with_del(cond.not_after_regex "xx")
+            -- disable adding a newline when you press <cr>
+            :with_cr(cond.none()),
+        },
+        -- disable for .vim files, but it work for another filetypes
+        Rule("a", "a", "-vim")
+      )
+    end,
+  },
 }
