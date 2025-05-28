@@ -11,6 +11,8 @@ vim.g.neovide_transparency = 0.0
 vim.g.transparency = 1.0
 vim.g.neovide_background_color = "#0f1117" .. alpha()
 vim.o.guifont = "Hack Nerd Font Mono:h16"
+-- Map jj to exc in insert mode
+vim.keymap.set('i', 'jj', '<ESC>', { noremap = true, silent = true })
 -- fsharp 쓸때 ionide가 빈줄에서 32603 에러를 쏟아내는거 방지
 vim.g["fsharp#show_signature_on_cursor_move"] = 0
 vim.g["fsharp#lsp_auto_setup"] = 0
@@ -84,12 +86,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- 	end,
 -- })
 -- telescope
-local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Telescope find files" })
-vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Telescope live grep" })
-vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "Telescope buffers" })
-vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "Telescope help tags" })
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = 'Telescope find files' })
+vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = 'Telescope live grep' })
+vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = 'Telescope help tags' })
+-- purescript tree-sitter
+vim.filetype.add({ extension = { purs = 'purescript' } })
 ---@type LazySpec
+local OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY")
 return {
 	{
 		"AstroNvim/astrocommunity",
@@ -180,7 +185,7 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 	},
-	{ "vim-scripts/paredit.vim", lazy = false },
+	{ "vim-scripts/paredit.vim",        lazy = false },
 	{
 		"kylechui/nvim-surround",
 		lazy = false,
@@ -191,7 +196,7 @@ return {
 		end,
 	},
 	{ "christoomey/vim-tmux-navigator", lazy = false },
-	{ "ionide/Ionide-vim", lazy = false },
+	{ "ionide/Ionide-vim",              lazy = false },
 	--				{
 	--        'nvim-orgmode/orgmode',
 	--        lazy = false,
@@ -435,22 +440,39 @@ return {
 			npairs.add_rules(
 				{
 					Rule("$", "$", { "tex", "latex" })
-						-- don't add a pair if the next character is %
-						:with_pair(cond.not_after_regex("%%"))
-						-- don't add a pair if  the previous character is xxx
-						:with_pair(
-							cond.not_before_regex("xxx", 3)
-						)
-						-- don't move right when repeat character
-						:with_move(cond.none())
-						-- don't delete if the next character is xx
-						:with_del(cond.not_after_regex("xx"))
-						-- disable adding a newline when you press <cr>
-						:with_cr(cond.none()),
+					-- don't add a pair if the next character is %
+							:with_pair(cond.not_after_regex("%%"))
+					-- don't add a pair if  the previous character is xxx
+							:with_pair(
+								cond.not_before_regex("xxx", 3)
+							)
+					-- don't move right when repeat character
+							:with_move(cond.none())
+					-- don't delete if the next character is xx
+							:with_del(cond.not_after_regex("xx"))
+					-- disable adding a newline when you press <cr>
+							:with_cr(cond.none()),
 				},
 				-- disable for .vim files, but it work for another filetypes
 				Rule("a", "a", "-vim")
 			)
+		end,
+	},
+	{
+		"Faywyn/llama-copilot.nvim",
+		config = function()
+			require('llama-copilot').setup({
+				host = "localhost",                    -- Remote server hostname
+				port = "11434",                        -- Remote server port (default or custom)
+				scheme = "http",                       -- Use "https" for secure connections, "http" otherwise
+				model = "deepseek-coder:6.7b",         -- Your preferred model
+				max_completion_size = 15,              -- Limit completion length
+				debug = true,                          -- Enable for troubleshooting
+				-- Optional: Custom headers for API key (if required)
+				headers = {
+					["Authorization"] = OLLAMA_API_KEY,           -- Replace with your API key
+				},
+			})
 		end,
 	},
 }
