@@ -93,6 +93,8 @@ vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = 'Telescope buffers' 
 vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = 'Telescope help tags' })
 -- purescript tree-sitter
 vim.filetype.add({ extension = { purs = 'purescript' } })
+-- drools tree-sitter
+vim.filetype.add({ extension = { drl = 'drools' } })
 ---@type LazySpec
 local OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY")
 return {
