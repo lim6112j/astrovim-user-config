@@ -303,7 +303,7 @@ return {
 				map("n", "<leader>cl", vim.lsp.codelens.run)
 				map("n", "<leader>sh", vim.lsp.buf.signature_help)
 				map("n", "<leader>rn", vim.lsp.buf.rename)
-				map("n", "<leader>f", vim.lsp.buf.format)
+				map("n", "<leader>bf", vim.lsp.buf.format)
 				map("n", "<leader>ca", vim.lsp.buf.code_action)
 
 				map("n", "<leader>ws", function()
@@ -462,15 +462,15 @@ return {
 		"Faywyn/llama-copilot.nvim",
 		config = function()
 			require('llama-copilot').setup({
-				host = "localhost",                    -- Remote server hostname
-				port = "11434",                        -- Remote server port (default or custom)
-				scheme = "http",                       -- Use "https" for secure connections, "http" otherwise
-				model = "deepseek-coder:6.7b",         -- Your preferred model
-				max_completion_size = 15,              -- Limit completion length
-				debug = true,                          -- Enable for troubleshooting
+				host = "localhost",        -- Remote server hostname
+				port = "11434",            -- Remote server port (default or custom)
+				scheme = "http",           -- Use "https" for secure connections, "http" otherwise
+				model = "deepseek-coder:6.7b", -- Your preferred model
+				max_completion_size = 15,  -- Limit completion length
+				debug = true,              -- Enable for troubleshooting
 				-- Optional: Custom headers for API key (if required)
 				headers = {
-					["Authorization"] = OLLAMA_API_KEY,           -- Replace with your API key
+					["Authorization"] = OLLAMA_API_KEY, -- Replace with your API key
 				},
 			})
 		end,
