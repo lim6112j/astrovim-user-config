@@ -20,8 +20,8 @@ vim.g["fsharp#workspace_mode_peek_deep_level"] = 4
 -- vim.g.fsharp#show_signature_on_cursor_move = 0
 
 -- augment workspace
-vim.g.augment_workspace_folders = {'~/workspce/kotlin/atomic-kotlin'}
-vim.keymap.set('n', '<leader>ac', :Augment chat<CR>)
+vim.g.augment_workspace_folders = {'~/workspace/kotlin/atomic-kotlin'}
+vim.keymap.set('n', '<leader>ac', ':Augment chat<CR>')
 -- cursor line
 function Pain()
 	local colors = {
