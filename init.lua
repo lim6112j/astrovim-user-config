@@ -20,8 +20,18 @@ vim.g["fsharp#workspace_mode_peek_deep_level"] = 4
 -- vim.g.fsharp#show_signature_on_cursor_move = 0
 
 -- augment workspace
-vim.g.augment_workspace_folders = {'~/workspace/kotlin/atomic-kotlin'}
+vim.g.augment_workspace_folders = { '~/workspace/kotlin/atomic-kotlin' }
 vim.keymap.set('n', '<leader>ac', ':Augment chat<CR>')
+vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>')
+vim.keymap.set('n', '<leader>ai', ':Augment signin<CR>')
+vim.keymap.set('n', '<leader>ao', ':Augment signout<CR>')
+vim.keymap.set('n', '<leader>ae', ':Augment enable<CR>')
+vim.keymap.set('n', '<leader>ad', ':Augment disable<CR>')
+vim.keymap.set('n', '<leader>as', ':Augment status<CR>')
+
+-- llama copilot
+vim.keymap.set('n', '<leader>mc', ':LlamaCopilotComplet<CR>')
+vim.keymap.set('n', '<leader>my', ':LlamaCopilotAccept<CR>')
 -- cursor line
 function Pain()
 	local colors = {
