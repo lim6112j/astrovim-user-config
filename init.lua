@@ -18,6 +18,10 @@ vim.g["fsharp#show_signature_on_cursor_move"] = 0
 vim.g["fsharp#lsp_auto_setup"] = 0
 vim.g["fsharp#workspace_mode_peek_deep_level"] = 4
 -- vim.g.fsharp#show_signature_on_cursor_move = 0
+
+-- augment workspace
+vim.g.augment_workspace_folders = ['~/workspce/kotlin/atomic-kotlin']
+
 -- cursor line
 function Pain()
 	local colors = {
@@ -98,10 +102,11 @@ vim.filetype.add({ extension = { drl = 'drools' } })
 ---@type LazySpec
 local OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY")
 return {
-	{
-		"AstroNvim/astrocommunity",
-		{ import = "astrocommunity.completion.copilot-lua-cmp" },
-	},
+	-- {
+	-- 	"AstroNvim/astrocommunity",
+	-- 	{ import = "astrocommunity.completion.copilot-lua-cmp" },
+	-- },
+	{ 'augmentcode/augment.vim' },
 	{
 		"rest-nvim/rest.nvim",
 		dependencies = {
@@ -187,7 +192,7 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 	},
-	{ "vim-scripts/paredit.vim",        lazy = false },
+	{ "vim-scripts/paredit.vim", lazy = false },
 	{
 		"kylechui/nvim-surround",
 		lazy = false,
@@ -464,12 +469,13 @@ return {
 		"Faywyn/llama-copilot.nvim",
 		config = function()
 			require('llama-copilot').setup({
-				host = "localhost",        -- Remote server hostname
-				port = "11434",            -- Remote server port (default or custom)
-				scheme = "http",           -- Use "https" for secure connections, "http" otherwise
-				model = "deepseek-coder:6.7b", -- Your preferred model
-				max_completion_size = 15,  -- Limit completion length
-				debug = true,              -- Enable for troubleshooting
+				host = "localhost", -- Remote server hostname
+				port = "11434", -- Remote server port (default or custom)
+				scheme = "http", -- Use "https" for secure connections, "http" otherwise
+				-- model = "deepseek-coder:6.7b", -- Your preferred model
+				model = "devstral:latest",
+				max_completion_size = 15, -- Limit completion length
+				debug = true,         -- Enable for troubleshooting
 				-- Optional: Custom headers for API key (if required)
 				headers = {
 					["Authorization"] = OLLAMA_API_KEY, -- Replace with your API key
