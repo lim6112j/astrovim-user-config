@@ -29,8 +29,8 @@ vim.keymap.set('n', '<leader>ae', ':Augment enable<CR>')
 vim.keymap.set('n', '<leader>ad', ':Augment disable<CR>')
 vim.keymap.set('n', '<leader>as', ':Augment status<CR>')
 -- augment completion accept with C-y
-vim.keymap.set('i', '<C-y>', '<Plug>(augment_compete_accept)')
-vim.keymap.set('i', '<C-tab', '<Plug>(augment_complete_next')
+vim.keymap.set('i', '<C-y>', '<Plug>(augment_complete_accept)')
+vim.keymap.set('i', '<C-tab>', '<Plug>(augment_complete_next)')
 
 -- llama copilot
 vim.keymap.set('n', '<leader>mc', ':LlamaCopilotComplet<CR>')
@@ -424,11 +424,11 @@ return {
 						"██   ██      ██    ██    ██   ██ ██    ██",
 						"██   ██ ███████    ██    ██   ██  ██████ ",
 						"",
-						"███    ██ ██    ██ ██ ███    ███",
-						"████   ██ ██    ██ ██ ████  ████",
-						"██ ██  ██ ██    ██ ██ ██ ████ ██",
-						"██  ██ ██  ██  ██  ██ ██  ██  ██",
-						"██   ████   ████   ██ ██      ██",
+						"███    ██ ██    ██ ██ ███    ███",
+						"████   ██ ██    ██ ██ ████  ████",
+						"██ ██  ██ ██    ██ ██ ██ ████ ██",
+						"██  ██ ██  ██  ██  ██ ██  ██  ██",
+						"██   ████   ████   ██ ██      ██",
 					}, "\n"),
 				},
 			},
