@@ -29,7 +29,7 @@ vim.keymap.set('n', '<leader>ae', ':Augment enable<CR>')
 vim.keymap.set('n', '<leader>ad', ':Augment disable<CR>')
 vim.keymap.set('n', '<leader>as', ':Augment status<CR>')
 -- augment completion accept with C-y
-vim.keymap.set('i', '<C-y>', '<Plug>(augment_complete_accept)')
+vim.keymap.set('i', '<C-y>', '<cmd>call augment#Accept()<cr>', { noremap = true })
 vim.keymap.set('i', '<C-tab>', '<Plug>(augment_complete_next)')
 
 -- llama copilot
