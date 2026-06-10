@@ -20,17 +20,17 @@ vim.g["fsharp#workspace_mode_peek_deep_level"] = 4
 -- vim.g.fsharp#show_signature_on_cursor_move = 0
 
 -- augment workspace
-vim.g.augment_workspace_folders = { '~/workspace/kotlin/atomic-kotlin' }
-vim.keymap.set('n', '<leader>ac', ':Augment chat<CR>')
-vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>')
-vim.keymap.set('n', '<leader>ai', ':Augment signin<CR>')
-vim.keymap.set('n', '<leader>ao', ':Augment signout<CR>')
-vim.keymap.set('n', '<leader>ae', ':Augment enable<CR>')
-vim.keymap.set('n', '<leader>ad', ':Augment disable<CR>')
-vim.keymap.set('n', '<leader>as', ':Augment status<CR>')
+vim.g.augment_workspace_folders = { '~/workspace/scala/hello_world_agent/', '~/workspace/kotlin/atomic-kotlin',
+	'/workspace/flutter/flutter_widgets' }
+-- vim.keymap.set('n', '<leader>ac', ':Augment chat<CR>')
+-- vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>')
+-- vim.keymap.set('n', '<leader>ai', ':Augment signin<CR>')
+-- vim.keymap.set('n', '<leader>ao', ':Augment signout<CR>')
+-- vim.keymap.set('n', '<leader>ae', ':Augment enable<CR>')
+-- vim.keymap.set('n', '<leader>ad', ':Augment disable<CR>')
+-- vim.keymap.set('n', '<leader>as', ':Augment status<CR>')
 -- augment completion accept with C-y
 vim.keymap.set('i', '<C-y>', '<cmd>call augment#Accept()<cr>', { noremap = true })
-vim.keymap.set('i', '<C-tab>', '<Plug>(augment_complete_next)')
 
 -- llama copilot
 vim.keymap.set('n', '<leader>mc', ':LlamaCopilotComplet<CR>')
@@ -115,11 +115,80 @@ vim.filetype.add({ extension = { drl = 'drools' } })
 ---@type LazySpec
 local OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY")
 return {
+	{
+		"stevearc/aerial.nvim",
+		version = false,
+	},
 	-- {
 	-- 	"AstroNvim/astrocommunity",
 	-- 	{ import = "astrocommunity.completion.copilot-lua-cmp" },
 	-- },
-	{ 'augmentcode/augment.vim' },
+	--{ 'augmentcode/augment.vim' },
+	{
+		"yetone/avante.nvim",
+		-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+		-- ⚠️ must add this setting! ! !
+		build = vim.fn.has("win32") ~= 0
+				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
+				or "make",
+		event = "VeryLazy",
+		version = false, -- Never set this value to "*"! Never!
+		---@module 'avante'
+		---@type avante.Config
+		opts = {
+			-- add any opts here
+			-- this file can contain specific instructions for your project
+			instructions_file = "avante.md",
+			-- for example
+			provider = "openrouter",
+			providers = {
+				openrouter = {
+					__inherited_from = "openai",
+					endpoint = "https://openrouter.ai/api/v1",
+					api_key_name = "OPENROUTER_API_KEY",
+					model = "moonshotai/kimi-k2.6",
+					timeout = 30000,
+				},
+			},
+		},
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"MunifTanjim/nui.nvim",
+			--- The below dependencies are optional,
+			"nvim-mini/mini.pick",        -- for file_selector provider mini.pick
+			"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
+			"hrsh7th/nvim-cmp",           -- autocompletion for avante commands and mentions
+			"ibhagwan/fzf-lua",           -- for file_selector provider fzf
+			"stevearc/dressing.nvim",     -- for input provider dressing
+			"folke/snacks.nvim",          -- for input provider snacks
+			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+			{
+				-- support for image pasting
+				"HakonHarnes/img-clip.nvim",
+				event = "VeryLazy",
+				opts = {
+					-- recommended settings
+					default = {
+						embed_image_as_base64 = false,
+						prompt_for_file_name = false,
+						drag_and_drop = {
+							insert_mode = true,
+						},
+						-- required for Windows users
+						use_absolute_path = true,
+					},
+				},
+			},
+			{
+				-- Make sure to set this up properly if you have lazy=true
+				'MeanderingProgrammer/render-markdown.nvim',
+				opts = {
+					file_types = { "markdown", "Avante" },
+				},
+				ft = { "markdown", "Avante" },
+			},
+		},
+	},
 	{
 		"rest-nvim/rest.nvim",
 		dependencies = {
@@ -205,7 +274,7 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 	},
-	{ "vim-scripts/paredit.vim", lazy = false },
+	{ "vim-scripts/paredit.vim",        lazy = false },
 	{
 		"kylechui/nvim-surround",
 		lazy = false,
