@@ -1,27 +1,28 @@
--- You can also add or configure plugins by creating files in this `plugins/` folder
--- PLEASE REMOVE THE EXAMPLES YOU HAVE NO INTEREST IN BEFORE ENABLING THIS FILE
--- Here are some examples:
-
 -- Helper function for transparency formatting
 local alpha = function()
-	return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
+  return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
 end
--- g:neovide_transparency should be 0 if you want to unify transparency of content and title bar.
+
+-- Neovide and transparency settings
 vim.g.neovide_transparency = 0.0
 vim.g.transparency = 1.0
 vim.g.neovide_background_color = "#0f1117" .. alpha()
 vim.o.guifont = "Hack Nerd Font Mono:h16"
--- Map jj to exc in insert mode
+
+-- Key mappings
 vim.keymap.set('i', 'jj', '<ESC>', { noremap = true, silent = true })
--- fsharp 쓸때 ionide가 빈줄에서 32603 에러를 쏟아내는거 방지
+
+-- F# settings
 vim.g["fsharp#show_signature_on_cursor_move"] = 0
 vim.g["fsharp#lsp_auto_setup"] = 0
 vim.g["fsharp#workspace_mode_peek_deep_level"] = 4
--- vim.g.fsharp#show_signature_on_cursor_move = 0
 
--- augment workspace
-vim.g.augment_workspace_folders = { '~/workspace/scala/hello_world_agent/', '~/workspace/kotlin/atomic-kotlin',
-	'/workspace/flutter/flutter_widgets' }
+-- Augment workspace folders
+vim.g.augment_workspace_folders = {
+  '~/workspace/scala/hello_world_agent/',
+  '~/workspace/kotlin/atomic-kotlin',
+  '/workspace/flutter/flutter_widgets'
+}
 -- vim.keymap.set('n', '<leader>ac', ':Augment chat<CR>')
 -- vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>')
 -- vim.keymap.set('n', '<leader>ai', ':Augment signin<CR>')
@@ -119,6 +120,12 @@ return {
 		"stevearc/aerial.nvim",
 		version = false,
 	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		branch = "main",
+		version = false,
+		build = ":TSUpdate",
+	},
 	-- {
 	-- 	"AstroNvim/astrocommunity",
 	-- 	{ import = "astrocommunity.completion.copilot-lua-cmp" },
@@ -146,7 +153,7 @@ return {
 					__inherited_from = "openai",
 					endpoint = "https://openrouter.ai/api/v1",
 					api_key_name = "OPENROUTER_API_KEY",
-					model = "moonshotai/kimi-k2.6",
+					model = "deepseek/deepseek-chat",
 					timeout = 30000,
 				},
 			},
