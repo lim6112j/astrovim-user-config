@@ -1,6 +1,6 @@
 -- Helper function for transparency formatting
 local alpha = function()
-  return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
+	return string.format("%x", math.floor(255 * vim.g.transparency or 0.8))
 end
 
 -- Neovide and transparency settings
@@ -19,9 +19,9 @@ vim.g["fsharp#workspace_mode_peek_deep_level"] = 4
 
 -- Augment workspace folders
 vim.g.augment_workspace_folders = {
-  '~/workspace/scala/hello_world_agent/',
-  '~/workspace/kotlin/atomic-kotlin',
-  '/workspace/flutter/flutter_widgets'
+	'~/workspace/scala/hello_world_agent/',
+	'~/workspace/kotlin/atomic-kotlin',
+	'/workspace/flutter/flutter_widgets'
 }
 -- vim.keymap.set('n', '<leader>ac', ':Augment chat<CR>')
 -- vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>')
@@ -125,6 +125,93 @@ return {
 		branch = "main",
 		version = false,
 		build = ":TSUpdate",
+		config = function(plugin, opts)
+			require("astronvim.plugins.configs.nvim-treesitter")(plugin, opts)
+
+			-- nvim 0.12 may pass quantified captures (tables) into directives.
+			-- Upstream nvim-treesitter directives assume TSNode and crash on markdown injections.
+			local query = require("vim.treesitter.query")
+			local directive_opts = vim.fn.has("nvim-0.10") == 1 and { force = true, all = false } or true
+
+			local html_script_type_languages = {
+				["importmap"] = "json",
+				["module"] = "javascript",
+				["application/ecmascript"] = "javascript",
+				["text/ecmascript"] = "javascript",
+			}
+			local non_filetype_match_injection_language_aliases = {
+				ex = "elixir",
+				pl = "perl",
+				sh = "bash",
+				uxn = "uxntal",
+				ts = "typescript",
+			}
+
+			local function get_parser_from_markdown_info_string(injection_alias)
+				local match = vim.filetype.match({ filename = "a." .. injection_alias })
+				return match or non_filetype_match_injection_language_aliases[injection_alias] or injection_alias
+			end
+
+			local function as_node(capture)
+				if capture == nil then
+					return nil
+				end
+				if type(capture) == "table" and type(capture.range) ~= "function" then
+					capture = capture[1]
+				end
+				if capture == nil then
+					return nil
+				end
+				if type(capture) == "userdata" then
+					return capture
+				end
+				if type(capture) == "table" and type(capture.range) == "function" then
+					return capture
+				end
+				return nil
+			end
+
+			local function get_capture_text(match, capture_id, bufnr, metadata)
+				local node = as_node(match[capture_id])
+				if not node then
+					return nil
+				end
+				local capture_metadata = metadata and metadata[capture_id] or nil
+				return vim.treesitter.get_node_text(node, bufnr, { metadata = capture_metadata }) or ""
+			end
+
+			query.add_directive("set-lang-from-mimetype!", function(match, _, bufnr, pred, metadata)
+				local type_attr_value = get_capture_text(match, pred[2], bufnr, metadata)
+				if not type_attr_value or type_attr_value == "" then
+					return
+				end
+				local configured = html_script_type_languages[type_attr_value]
+				if configured then
+					metadata["injection.language"] = configured
+				else
+					local parts = vim.split(type_attr_value, "/", {})
+					metadata["injection.language"] = parts[#parts]
+				end
+			end, directive_opts)
+
+			query.add_directive("set-lang-from-info-string!", function(match, _, bufnr, pred, metadata)
+				local injection_alias = get_capture_text(match, pred[2], bufnr, metadata)
+				if not injection_alias or injection_alias == "" then
+					return
+				end
+				metadata["injection.language"] = get_parser_from_markdown_info_string(string.lower(injection_alias))
+			end, directive_opts)
+
+			query.add_directive("downcase!", function(match, _, bufnr, pred, metadata)
+				local id = pred[2]
+				local text = get_capture_text(match, id, bufnr, metadata)
+				if not text then
+					return
+				end
+				metadata[id] = metadata[id] or {}
+				metadata[id].text = string.lower(text)
+			end, directive_opts)
+		end,
 	},
 	-- {
 	-- 	"AstroNvim/astrocommunity",
@@ -153,7 +240,7 @@ return {
 					__inherited_from = "openai",
 					endpoint = "https://openrouter.ai/api/v1",
 					api_key_name = "OPENROUTER_API_KEY",
-					model = "deepseek/deepseek-chat",
+					model = "deepseek/deepseek-v4-pro",
 					timeout = 30000,
 				},
 			},
