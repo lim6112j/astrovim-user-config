@@ -10,7 +10,7 @@ vim.g.neovide_background_color = "#0f1117" .. alpha()
 vim.o.guifont = "Hack Nerd Font Mono:h16"
 
 -- Key mappings
-vim.keymap.set('i', 'jj', '<ESC>', { noremap = true, silent = true })
+vim.keymap.set("i", "jj", "<ESC>", { noremap = true, silent = true })
 
 -- F# settings
 vim.g["fsharp#show_signature_on_cursor_move"] = 0
@@ -19,9 +19,9 @@ vim.g["fsharp#workspace_mode_peek_deep_level"] = 4
 
 -- Augment workspace folders
 vim.g.augment_workspace_folders = {
-	'~/workspace/scala/hello_world_agent/',
-	'~/workspace/kotlin/atomic-kotlin',
-	'/workspace/flutter/flutter_widgets'
+	"~/workspace/scala/hello_world_agent/",
+	"~/workspace/kotlin/atomic-kotlin",
+	"/workspace/flutter/flutter_widgets",
 }
 -- vim.keymap.set('n', '<leader>ac', ':Augment chat<CR>')
 -- vim.keymap.set('n', '<leader>at', ':Augment chat-toggle<CR>')
@@ -31,11 +31,11 @@ vim.g.augment_workspace_folders = {
 -- vim.keymap.set('n', '<leader>ad', ':Augment disable<CR>')
 -- vim.keymap.set('n', '<leader>as', ':Augment status<CR>')
 -- augment completion accept with C-y
-vim.keymap.set('i', '<C-y>', '<cmd>call augment#Accept()<cr>', { noremap = true })
+vim.keymap.set("i", "<C-y>", "<cmd>call augment#Accept()<cr>", { noremap = true })
 
 -- llama copilot
-vim.keymap.set('n', '<leader>mc', ':LlamaCopilotComplet<CR>')
-vim.keymap.set('n', '<leader>my', ':LlamaCopilotAccept<CR>')
+vim.keymap.set("n", "<leader>mc", ":LlamaCopilotComplet<CR>")
+vim.keymap.set("n", "<leader>my", ":LlamaCopilotAccept<CR>")
 -- cursor line
 function Pain()
 	local colors = {
@@ -104,18 +104,25 @@ vim.api.nvim_create_autocmd("LspAttach", {
 -- 	end,
 -- })
 -- telescope
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = 'Telescope find files' })
-vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = 'Telescope live grep' })
-vim.keymap.set('n', '<leader>sb', builtin.buffers, { desc = 'Telescope buffers' })
-vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = 'Telescope help tags' })
+local builtin = require("telescope.builtin")
+vim.keymap.set("n", "<leader>sf", builtin.find_files, { desc = "Telescope find files" })
+vim.keymap.set("n", "<leader>sg", builtin.live_grep, { desc = "Telescope live grep" })
+vim.keymap.set("n", "<leader>sb", builtin.buffers, { desc = "Telescope buffers" })
+vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "Telescope help tags" })
 -- purescript tree-sitter
-vim.filetype.add({ extension = { purs = 'purescript' } })
+vim.filetype.add({ extension = { purs = "purescript" } })
 -- drools tree-sitter
-vim.filetype.add({ extension = { drl = 'drools' } })
+vim.filetype.add({ extension = { drl = "drools" } })
 ---@type LazySpec
 local OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY")
 return {
+	-- Default colorscheme — set via AstroUI so it isn't overridden later
+	{
+		"AstroNvim/astroui",
+		opts = {
+			colorscheme = "evening",
+		},
+	},
 	{
 		"stevearc/aerial.nvim",
 		version = false,
@@ -224,7 +231,7 @@ return {
 		-- ⚠️ must add this setting! ! !
 		build = vim.fn.has("win32") ~= 0
 				and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false"
-				or "make",
+			or "make",
 		event = "VeryLazy",
 		version = false, -- Never set this value to "*"! Never!
 		---@module 'avante'
@@ -233,6 +240,11 @@ return {
 			-- add any opts here
 			-- this file can contain specific instructions for your project
 			instructions_file = "avante.md",
+			-- soft wrap the sidebar at its own width; avante's ftplugin hardcodes
+			-- `wrap = false`, so after/ftplugin/Avante.lua re-enables it
+			windows = {
+				wrap = true,
+			},
 			-- for example
 			provider = "openrouter",
 			providers = {
@@ -240,7 +252,7 @@ return {
 					__inherited_from = "openai",
 					endpoint = "https://openrouter.ai/api/v1",
 					api_key_name = "OPENROUTER_API_KEY",
-					model = "deepseek/deepseek-v4-pro",
+					model = "z-ai/glm-5.3-flash",
 					timeout = 30000,
 				},
 			},
@@ -249,12 +261,12 @@ return {
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",
 			--- The below dependencies are optional,
-			"nvim-mini/mini.pick",        -- for file_selector provider mini.pick
+			"nvim-mini/mini.pick", -- for file_selector provider mini.pick
 			"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
-			"hrsh7th/nvim-cmp",           -- autocompletion for avante commands and mentions
-			"ibhagwan/fzf-lua",           -- for file_selector provider fzf
-			"stevearc/dressing.nvim",     -- for input provider dressing
-			"folke/snacks.nvim",          -- for input provider snacks
+			"hrsh7th/nvim-cmp", -- autocompletion for avante commands and mentions
+			"ibhagwan/fzf-lua", -- for file_selector provider fzf
+			"stevearc/dressing.nvim", -- for input provider dressing
+			"folke/snacks.nvim", -- for input provider snacks
 			"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
 			{
 				-- support for image pasting
@@ -275,7 +287,7 @@ return {
 			},
 			{
 				-- Make sure to set this up properly if you have lazy=true
-				'MeanderingProgrammer/render-markdown.nvim',
+				"MeanderingProgrammer/render-markdown.nvim",
 				opts = {
 					file_types = { "markdown", "Avante" },
 				},
@@ -368,7 +380,7 @@ return {
 			"nvim-lua/plenary.nvim",
 		},
 	},
-	{ "vim-scripts/paredit.vim",        lazy = false },
+	{ "vim-scripts/paredit.vim", lazy = false },
 	{
 		"kylechui/nvim-surround",
 		lazy = false,
@@ -379,7 +391,7 @@ return {
 		end,
 	},
 	{ "christoomey/vim-tmux-navigator", lazy = false },
-	{ "ionide/Ionide-vim",              lazy = false },
+	{ "ionide/Ionide-vim", lazy = false },
 	--				{
 	--        'nvim-orgmode/orgmode',
 	--        lazy = false,
@@ -623,18 +635,18 @@ return {
 			npairs.add_rules(
 				{
 					Rule("$", "$", { "tex", "latex" })
-					-- don't add a pair if the next character is %
-							:with_pair(cond.not_after_regex("%%"))
-					-- don't add a pair if  the previous character is xxx
-							:with_pair(
-								cond.not_before_regex("xxx", 3)
-							)
-					-- don't move right when repeat character
-							:with_move(cond.none())
-					-- don't delete if the next character is xx
-							:with_del(cond.not_after_regex("xx"))
-					-- disable adding a newline when you press <cr>
-							:with_cr(cond.none()),
+						-- don't add a pair if the next character is %
+						:with_pair(cond.not_after_regex("%%"))
+						-- don't add a pair if  the previous character is xxx
+						:with_pair(
+							cond.not_before_regex("xxx", 3)
+						)
+						-- don't move right when repeat character
+						:with_move(cond.none())
+						-- don't delete if the next character is xx
+						:with_del(cond.not_after_regex("xx"))
+						-- disable adding a newline when you press <cr>
+						:with_cr(cond.none()),
 				},
 				-- disable for .vim files, but it work for another filetypes
 				Rule("a", "a", "-vim")
@@ -644,14 +656,14 @@ return {
 	{
 		"Faywyn/llama-copilot.nvim",
 		config = function()
-			require('llama-copilot').setup({
+			require("llama-copilot").setup({
 				host = "localhost", -- Remote server hostname
 				port = "11434", -- Remote server port (default or custom)
 				scheme = "http", -- Use "https" for secure connections, "http" otherwise
 				-- model = "deepseek-coder:6.7b", -- Your preferred model
 				model = "devstral:latest",
 				max_completion_size = 15, -- Limit completion length
-				debug = true,         -- Enable for troubleshooting
+				debug = true, -- Enable for troubleshooting
 				-- Optional: Custom headers for API key (if required)
 				headers = {
 					["Authorization"] = OLLAMA_API_KEY, -- Replace with your API key
