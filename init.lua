@@ -115,6 +115,29 @@ vim.filetype.add({ extension = { purs = "purescript" } })
 vim.filetype.add({ extension = { drl = "drools" } })
 ---@type LazySpec
 local OLLAMA_API_KEY = os.getenv("OLLAMA_API_KEY")
+
+-- Neovim truncates end-of-line diagnostic text at the window edge, so long
+-- messages get cut off. Virtual lines wrap instead: hard-wrap the message at
+-- the width the window can actually display.
+local function wrap_diagnostic_message(message, width)
+	local lines = {}
+	for _, line in ipairs(vim.split(message:gsub("\r", ""), "\n", { plain = true })) do
+		local current = ""
+		for word in line:gmatch("%S+") do
+			if current == "" then
+				current = word
+			elseif #current + 1 + #word <= width then
+				current = current .. " " .. word
+			else
+				table.insert(lines, current)
+				current = word
+			end
+		end
+		table.insert(lines, current)
+	end
+	return lines
+end
+
 return {
 	-- Default colorscheme — set via AstroUI so it isn't overridden later
 	{
@@ -260,6 +283,9 @@ return {
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",
+			-- required by avante's command parser; without it `plugin/avante.lua`
+			-- fails to source and no `:Avante*` command is registered
+			{ "ColinKennedy/mega.cmdparse", dependencies = { "ColinKennedy/mega.logging" } },
 			--- The below dependencies are optional,
 			"nvim-mini/mini.pick", -- for file_selector provider mini.pick
 			"nvim-telescope/telescope.nvim", -- for file_selector provider telescope
@@ -299,6 +325,9 @@ return {
 		"rest-nvim/rest.nvim",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
+			-- rest.nvim hard-requires `fidget.progress` in its curl client and warns
+			-- at startup when it is missing
+			{ "j-hui/fidget.nvim", opts = {} },
 			opts = function(_, opts)
 				opts.ensure_installed = opts.ensure_installed or {}
 				table.insert(opts.ensure_installed, "http")
@@ -349,21 +378,46 @@ return {
 		end,
 	},
 	{
-		"neovim/nvim-lspconfig",
-		opts = function()
-			require("lspconfig").hls.setup({
-				ghcversion = "9.6.7",
-				cabalFormattingProvider = "cabalfmt",
-				formattingProvider = "ormolu",
-			})
-		end,
+		"AstroNvim/astrolsp",
+		opts = {
+			config = {
+				hls = {
+					filetypes = { "haskell", "lhaskell", "cabal" },
+					settings = {
+						haskell = {
+							formattingProvider = "fourmolu",
+							cabalFormattingProvider = "cabalfmt",
+						},
+					},
+				},
+				ocamllsp = {},
+			},
+		},
 	},
-
 	{
-		"neovim/nvim-lspconfig",
-		opts = function()
-			require("lspconfig").ocamllsp.setup({})
-		end,
+		-- Show diagnostics as wrapped virtual lines under the code instead of
+		-- end-of-line virtual text, which Neovim truncates at the window edge
+		"AstroNvim/astrocore",
+		opts = {
+			features = {
+				-- must match the diagnostics config below, otherwise astrocore
+				-- toggles virtual lines back off at startup
+				diagnostics = { virtual_text = false, virtual_lines = true },
+			},
+			diagnostics = {
+				virtual_text = false,
+				virtual_lines = {
+					format = function(diagnostic)
+						local message = (diagnostic.code and (diagnostic.code .. ": ") or "") .. diagnostic.message
+						local wininfo = vim.fn.getwininfo(vim.api.nvim_get_current_win())[1]
+						local textoff = wininfo and wininfo.textoff or 0
+						-- the "└──── " connector of a virtual line takes 6 columns
+						local width = math.max(20, vim.api.nvim_win_get_width(0) - textoff - 6)
+						return table.concat(wrap_diagnostic_message(message, width), "\n")
+					end,
+				},
+			},
+		},
 	},
 	{
 		-- nvim v0.8.0
